@@ -1,4 +1,4 @@
-package com.example.demo;
+package de.neuefische.muc.kanban;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

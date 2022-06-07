@@ -1,4 +1,4 @@
-package com.example.demo;
+package de.neuefische.muc.kanban;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
