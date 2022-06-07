@@ -28,4 +28,16 @@ class KanbanRepositoryTest {
         Assertions.assertThat(kanbanRepository.findAll()).isEmpty();
     }
 
+    @Test
+    void shouldEditTask() {
+        var kanbanRepository = new KanbanRepository();
+        var task = new Task("Abwashen", "Küche", TaskStatus.OPEN);
+        kanbanRepository.save(task);
+
+        var taskChanged = new Task(task.getId(), "Abwaschen", "Küche", TaskStatus.OPEN);
+        kanbanRepository.save(taskChanged);
+
+        Assertions.assertThat(kanbanRepository.findAll()).hasSize(1);
+    }
+
 }

@@ -10,20 +10,21 @@ import java.util.Optional;
 @Repository
 public class KanbanRepository {
 
-    private List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
 
     public List<Task> findAll() {
         return tasks;
     }
 
     public void save(Task task) {
-        int index = tasks.indexOf(task);
-        if (index < 0) {
-            tasks.add(task);
-        } else {
-            tasks.remove(index);
-            tasks.add(index, task);
-        }
+        findById(task.getId())
+                .ifPresentOrElse(
+                        savedTask -> {
+                            int index = tasks.indexOf(savedTask);
+                            tasks.set(index, task);
+                        },
+                        () -> tasks.add(task)
+                );
     }
 
     public void deleteById(String id) {
