@@ -1,0 +1,11 @@
+.editPage {
+    display: grid;
+    grid-template-rows: 1fr 1fr 5fr;
+}
+
+.editForm {
+    display: grid;
+    grid-gap: 5px;
+    margin: 15px 0;
+    justify-items: center;
+}
