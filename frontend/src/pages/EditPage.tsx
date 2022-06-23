@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {changeItem, getAllItems, getItemById} from "../service/apiService";
+import {changeItem, getItemById} from "../service/apiService";
 import {KanbanItem} from "../service/models";
 import Header from "../components/Header";
 import './EditPage.css'
