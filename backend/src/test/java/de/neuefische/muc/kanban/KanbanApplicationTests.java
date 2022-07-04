@@ -3,13 +3,13 @@ package de.neuefische.muc.kanban;
 import de.neuefische.muc.kanban.user.LoginData;
 import de.neuefische.muc.kanban.user.LoginResponse;
 import de.neuefische.muc.kanban.user.UserCreationData;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class KanbanApplicationTests {
@@ -20,7 +20,7 @@ class KanbanApplicationTests {
 	@Test
 	void integrationTest() {
 		ResponseEntity<Void> userCreationResponse = restTemplate.postForEntity("/api/users", new UserCreationData("user", "pw", "pw"), Void.class);
-		Assertions.assertThat(userCreationResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(userCreationResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
 		ResponseEntity<LoginResponse> loginResponse = restTemplate.postForEntity("/api/auth/login", new LoginData("user", "pw"), LoginResponse.class);
 		String jwt = loginResponse.getBody().getJwt();
@@ -31,7 +31,9 @@ class KanbanApplicationTests {
 				new HttpEntity<>(createHeaders(jwt)),
 				Task[].class
 		);
-		Assertions.assertThat(emptyResponse.getBody()).isEmpty();
+		assertThat(emptyResponse.getBody()).isEmpty();
+
+		jwt = refreshToken(jwt);
 
 		ResponseEntity<Void> createResponse = restTemplate.exchange(
 				"/api/kanban",
@@ -39,7 +41,9 @@ class KanbanApplicationTests {
 				new HttpEntity<>(new Task("Einkaufen", "Alles", TaskStatus.OPEN), createHeaders(jwt)),
 				Void.class
 		);
-		Assertions.assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		jwt = refreshToken(jwt);
 
 		ResponseEntity<Task[]> listResponse = restTemplate.exchange(
 				"/api/kanban",
@@ -47,16 +51,20 @@ class KanbanApplicationTests {
 				new HttpEntity<>(createHeaders(jwt)),
 				Task[].class
 		);
-		Assertions.assertThat(listResponse.getBody()).hasSize(1);
+		assertThat(listResponse.getBody()).hasSize(1);
 		Task task = listResponse.getBody()[0];
-		Assertions.assertThat(task.getStatus()).isEqualTo(TaskStatus.OPEN);
+		assertThat(task.getStatus()).isEqualTo(TaskStatus.OPEN);
+
+		jwt = refreshToken(jwt);
 
 		ResponseEntity<Void> promoteResponse = restTemplate.exchange(
 				"/api/kanban/next",
 				HttpMethod.PUT, new HttpEntity<>(task, createHeaders(jwt)),
 				Void.class
 		);
-		Assertions.assertThat(promoteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(promoteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		jwt = refreshToken(jwt);
 
 		ResponseEntity<Task> getResponse = restTemplate.exchange(
 				"/api/kanban/" + task.getId(),
@@ -64,13 +72,24 @@ class KanbanApplicationTests {
 				new HttpEntity<>(createHeaders(jwt)),
 				Task.class
 		);
-		Assertions.assertThat(getResponse.getBody().getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
+		assertThat(getResponse.getBody().getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
 	}
 
 	private HttpHeaders createHeaders(String jwt) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + jwt);
 		return headers;
+	}
+
+	private String refreshToken(String jwt) {
+		ResponseEntity<LoginResponse> refreshResponse = restTemplate.exchange(
+				"/api/auth/refresh",
+				HttpMethod.POST,
+				new HttpEntity<>(createHeaders(jwt)),
+				LoginResponse.class
+		);
+		assertThat(refreshResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		return refreshResponse.getBody().getJwt();
 	}
 
 }
