@@ -22,8 +22,6 @@ export default function KanbanForm(props : KanbanFormProps){
             .catch(err=> console.log(err.message))
         setTask("")
         setDescription("")
-
-
     }
 
     return(
