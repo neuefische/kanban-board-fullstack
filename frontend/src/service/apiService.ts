@@ -1,41 +1,74 @@
-import axios from "axios";
-import {KanbanItem, UserCreationData} from "./models";
+import axios, { AxiosResponse } from "axios";
+import {KanbanItem, LoginData, LoginResponse, UserCreationData} from "./models";
 
 export const registerUser = (userCreationData: UserCreationData) => {
     return axios.post('/api/users', userCreationData)
 }
 
+export const loginUser = (loginData: LoginData) => {
+    return axios.post('/api/auth/login', loginData)
+        .then((response: AxiosResponse<LoginResponse>) => response.data)
+}
+
 export const getAllItems = () =>{
-    return axios.get(`api/kanban`)
+    return axios.get(`api/kanban`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(response => response.data)
 }
 
 export const postNewItem = (item : KanbanItem) =>{
-    return axios.post(`api/kanban`,item)
+    return axios.post(`api/kanban`, item, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(response => response.data)
 }
 
 export const deleteItem = (id ?: string) => {
-    return axios.delete(`api/kanban/${id}`)
+    return axios.delete(`api/kanban/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(response => response.data)
 }
 
 export const changeItem = (item : KanbanItem) => {
-    return axios.put(`api/kanban`,item)
+    return axios.put(`api/kanban`,item, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(response => response.data)
 }
 
 export const getItemById = (id : string) => {
-    return axios.get(`api/kanban/${id}`)
+    return axios.get(`api/kanban/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(response => response.data)
 }
 
 export const advanceKanban = (item : KanbanItem) =>{
-    return axios.put(`api/kanban/next`,item)
+    return axios.put(`api/kanban/next`,item, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(respone => respone.data)
 }
 
 export const returnKanban = (item : KanbanItem) =>{
-    return axios.put(`api/kanban/prev`,item)
+    return axios.put(`api/kanban/prev`, item, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
         .then(respone => respone.data)
 }

@@ -16,9 +16,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody UserCreationDTO userCreationDTO) {
+    public ResponseEntity<Void> createUser(@RequestBody UserCreationData userCreationData) {
         try {
-            userService.createNewUser(userCreationDTO);
+            userService.createNewUser(userCreationData);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
