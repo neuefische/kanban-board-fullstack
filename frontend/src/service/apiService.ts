@@ -16,7 +16,10 @@ export const getAllItems = () =>{
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(response => response.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const postNewItem = (item : KanbanItem) =>{
@@ -25,7 +28,10 @@ export const postNewItem = (item : KanbanItem) =>{
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(response => response.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const deleteItem = (id ?: string) => {
@@ -34,7 +40,10 @@ export const deleteItem = (id ?: string) => {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(response => response.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const changeItem = (item : KanbanItem) => {
@@ -43,7 +52,10 @@ export const changeItem = (item : KanbanItem) => {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(response => response.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const getItemById = (id : string) => {
@@ -52,7 +64,10 @@ export const getItemById = (id : string) => {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(response => response.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const advanceKanban = (item : KanbanItem) =>{
@@ -61,7 +76,10 @@ export const advanceKanban = (item : KanbanItem) =>{
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(respone => respone.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
 }
 
 export const returnKanban = (item : KanbanItem) =>{
@@ -70,5 +88,18 @@ export const returnKanban = (item : KanbanItem) =>{
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
     })
-        .then(respone => respone.data)
+    .then(response => {
+        refreshToken()
+        return response.data
+    })
+}
+
+const refreshToken = () => {
+    axios.post('/api/auth/refresh', null, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+    .then((response: AxiosResponse<LoginResponse>) => response.data)
+    .then(loginResponse => localStorage.setItem('jwt', loginResponse.jwt))
 }

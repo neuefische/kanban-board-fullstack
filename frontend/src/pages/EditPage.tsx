@@ -36,7 +36,7 @@ export default function EditPage(){
             'description':desc,
             'status':item.status
         })
-            .then(() => nav('/'))
+            .then(() => nav('/app'))
             .catch(err => console.log(err.message))
     }
 

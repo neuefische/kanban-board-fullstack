@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/auth/login")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -22,7 +23,7 @@ public class LoginController {
     private final JwtService jwtService;
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginData loginData) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
@@ -32,6 +33,13 @@ public class LoginController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(Principal principal) {
+        KanbanUser user = userService.findByUsername(principal.getName()).orElseThrow();
+        String jwt = jwtService.createJwt(new HashMap<>(), user.getId());
+        return ResponseEntity.ok(new LoginResponse(jwt));
     }
 
 }
