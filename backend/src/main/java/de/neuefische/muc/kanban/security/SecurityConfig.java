@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/users", "/api/auth/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/test.html").permitAll()
                 .antMatchers(HttpMethod.GET, "/*", "/index*", "/static/**", "/*.js", "/*.json", "/*.ico","/*.png").permitAll()
+                .antMatchers(HttpMethod.GET, "/app").authenticated()
                 .antMatchers("/**").authenticated()
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
