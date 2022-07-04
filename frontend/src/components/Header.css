@@ -1,6 +1,15 @@
 .header {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     border: antiquewhite solid 3px;
 }
 
+.header .headline {
+    display: flex;
+    justify-content: center;
+}
+
+.header .timer {
+    display: flex;
+    justify-content: center;
+}
