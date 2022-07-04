@@ -9,8 +9,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class KanbanServiceTest {
 
@@ -59,7 +58,8 @@ public class KanbanServiceTest {
         Task newTask = new Task("Neu", "Beschreibung", TaskStatus.OPEN);
         kanbanService.createTask(newTask, "testUserId");
 
-        Mockito.verify(kanbanRepository).save(newTask);
+        Task taskToBeSaved = new Task(null, "Neu", "Beschreibung", TaskStatus.OPEN, "testUserId");
+        verify(kanbanRepository).save(taskToBeSaved);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class KanbanServiceTest {
         KanbanService kanbanService = new KanbanService(kanbanRepository);
         kanbanService.promoteTask(taskToEdit, "testUserId");
 
-        Mockito.verify(kanbanRepository).save(taskToSave);
+        verify(kanbanRepository).save(taskToSave);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class KanbanServiceTest {
         KanbanService kanbanService = new KanbanService(kanbanRepository);
         kanbanService.demoteTask(taskToEdit, "testUserId");
 
-        Mockito.verify(kanbanRepository).save(taskToSave);
+        verify(kanbanRepository).save(taskToSave);
     }
 
     @Test
