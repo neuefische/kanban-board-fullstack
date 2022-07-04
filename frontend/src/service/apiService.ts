@@ -1,5 +1,9 @@
 import axios from "axios";
-import {KanbanItem} from "./models";
+import {KanbanItem, UserCreationData} from "./models";
+
+export const registerUser = (userCreationData: UserCreationData) => {
+    return axios.post('/api/users', userCreationData)
+}
 
 export const getAllItems = () =>{
     return axios.get(`api/kanban`)

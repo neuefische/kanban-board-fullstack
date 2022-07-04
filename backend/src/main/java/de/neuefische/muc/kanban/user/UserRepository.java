@@ -1,8 +1,8 @@
-package de.neuefische.muc.kanban;
+package de.neuefische.muc.kanban.user;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface KanbanRepository extends MongoRepository<Task, String> {
+public interface UserRepository extends MongoRepository<User, String> {
 }

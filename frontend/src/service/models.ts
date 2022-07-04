@@ -7,3 +7,9 @@ export interface KanbanItem {
     description : string,
     status : string;
 }
+
+export interface UserCreationData {
+    username: string
+    password: string
+    passwordRepeat: string
+}
