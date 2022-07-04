@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/kanban")
+@CrossOrigin
 @RequiredArgsConstructor
 public class KanbanController {
 
@@ -36,8 +37,13 @@ public class KanbanController {
     }
 
     @DeleteMapping("/{taskId}")
-    public void deleteTask(@PathVariable String taskId) {
-        kanbanService.deleteTask(taskId);
+    public ResponseEntity<Void> deleteTask(@PathVariable String taskId) {
+        try {
+            kanbanService.deleteTask(taskId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/next")

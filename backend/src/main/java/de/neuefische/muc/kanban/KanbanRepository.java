@@ -28,7 +28,10 @@ public class KanbanRepository {
     }
 
     public void deleteById(String id) {
-        tasks.removeIf(task -> Objects.equals(task.getId(), id));
+        boolean removed = tasks.removeIf(task -> Objects.equals(task.getId(), id));
+        if (!removed) {
+            throw new RuntimeException();
+        }
     }
 
     public Optional<Task> findById(String id) {
