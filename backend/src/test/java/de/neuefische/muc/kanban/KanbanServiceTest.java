@@ -7,6 +7,11 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class KanbanServiceTest {
 
     @Test
@@ -17,13 +22,13 @@ public class KanbanServiceTest {
                 new Task("Vorcoden", "Spring Boot", TaskStatus.IN_PROGRESS)
         );
 
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
-        Mockito.when(kanbanRepository.findAll()).thenReturn(tasks);
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findAllByUserId("testUserId")).thenReturn(tasks);
 
         KanbanService kanbanService = new KanbanService(kanbanRepository);
 
         // When
-        List<Task> actual = kanbanService.findAll();
+        List<Task> actual = kanbanService.findAll("testUserId");
 
         // Then
         Assertions.assertThat(actual).hasSize(2);
@@ -34,13 +39,13 @@ public class KanbanServiceTest {
         // Given
         var task = new Task("Einkaufen", "Viel!!!", TaskStatus.OPEN);
 
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
-        Mockito.when(kanbanRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findByIdAndUserId(task.getId(), "testUserId")).thenReturn(Optional.of(task));
 
         KanbanService kanbanService = new KanbanService(kanbanRepository);
 
         // When
-        Optional<Task> actual = kanbanService.findById(task.getId());
+        Optional<Task> actual = kanbanService.findById(task.getId(), "testUserId");
 
         // Then
         Assertions.assertThat(actual).contains(task);
@@ -48,36 +53,51 @@ public class KanbanServiceTest {
 
     @Test
     void shouldCreateNewTask() {
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
         KanbanService kanbanService = new KanbanService(kanbanRepository);
 
         Task newTask = new Task("Neu", "Beschreibung", TaskStatus.OPEN);
-        kanbanService.createTask(newTask);
+        kanbanService.createTask(newTask, "testUserId");
 
         Mockito.verify(kanbanRepository).save(newTask);
     }
 
     @Test
     void shouldEditExistingTask() {
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
+        Task taskToEdit = new Task("the-id", "Neu", "Beschreibung", TaskStatus.OPEN, "testUserId");
+        Task savedTask = new Task("the-id", "Neu", "Beschreibung", TaskStatus.OPEN, "testUserId");
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findByIdAndUserId("the-id", "testUserId")).thenReturn(Optional.of(savedTask));
+        when(kanbanRepository.save(taskToEdit)).thenReturn(taskToEdit);
         KanbanService kanbanService = new KanbanService(kanbanRepository);
 
-        Task taskToEdit = new Task("Neu", "Beschreibung", TaskStatus.OPEN);
-        kanbanService.editTask(taskToEdit);
+        assertThatNoException()
+                .isThrownBy(() -> kanbanService.editTask(taskToEdit, "testUserId"));
+    }
 
-        Mockito.verify(kanbanRepository).save(taskToEdit);
+    @Test
+    void shouldNotEditExistingTask() {
+        Task taskToEdit = new Task("the-id", "Neu", "Beschreibung", TaskStatus.OPEN, "testUserId");
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findByIdAndUserId("the-id", "testUserId")).thenReturn(Optional.empty());
+
+        KanbanService kanbanService = new KanbanService(kanbanRepository);
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> kanbanService.editTask(taskToEdit, "testUserId"));
     }
 
     @Test
     void shouldPromoteTask() {
         Task taskToEdit = new Task("Wäsche waschen", "Buhhh!", TaskStatus.OPEN);
-        Task taskToSave = new Task(taskToEdit.getId(), "Wäsche waschen", "Buhhh!", TaskStatus.IN_PROGRESS);
+        taskToEdit.setUserId("testUserId");
+        Task taskToSave = new Task(taskToEdit.getId(), "Wäsche waschen", "Buhhh!", TaskStatus.IN_PROGRESS, "testUserId");
 
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
-        Mockito.when(kanbanRepository.findById(taskToEdit.getId())).thenReturn(Optional.of(taskToEdit));
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findByIdAndUserId(taskToEdit.getId(), "testUserId")).thenReturn(Optional.of(taskToEdit));
 
         KanbanService kanbanService = new KanbanService(kanbanRepository);
-        kanbanService.promoteTask(taskToEdit);
+        kanbanService.promoteTask(taskToEdit, "testUserId");
 
         Mockito.verify(kanbanRepository).save(taskToSave);
     }
@@ -85,25 +105,36 @@ public class KanbanServiceTest {
     @Test
     void shouldDemoteTask() {
         Task taskToEdit = new Task("Wäsche waschen", "Buhhh!", TaskStatus.DONE);
-        Task taskToSave = new Task(taskToEdit.getId(), "Wäsche waschen", "Buhhh!", TaskStatus.IN_PROGRESS);
+        taskToEdit.setUserId("testUserId");
+        Task taskToSave = new Task(taskToEdit.getId(), "Wäsche waschen", "Buhhh!", TaskStatus.IN_PROGRESS, "testUserId");
 
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
-        Mockito.when(kanbanRepository.findById(taskToEdit.getId())).thenReturn(Optional.of(taskToEdit));
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.findByIdAndUserId(taskToEdit.getId(), "testUserId")).thenReturn(Optional.of(taskToEdit));
 
         KanbanService kanbanService = new KanbanService(kanbanRepository);
-        kanbanService.demoteTask(taskToEdit);
+        kanbanService.demoteTask(taskToEdit, "testUserId");
 
         Mockito.verify(kanbanRepository).save(taskToSave);
     }
 
     @Test
     void shouldDeleteTask() {
-        KanbanRepository kanbanRepository = Mockito.mock(KanbanRepository.class);
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.deleteByIdAndUserId("4711", "testUserId")).thenReturn(Optional.of(new Task()));
         KanbanService kanbanService = new KanbanService(kanbanRepository);
 
-        kanbanService.deleteTask("4711");
+        assertThatNoException()
+                .isThrownBy(() -> kanbanService.deleteTask("4711", "testUserId"));
+    }
 
-        Mockito.verify(kanbanRepository).deleteById("4711");
+    @Test
+    void shouldNotDeleteTask() {
+        KanbanRepository kanbanRepository = mock(KanbanRepository.class);
+        when(kanbanRepository.deleteByIdAndUserId("4711", "testUserId")).thenReturn(Optional.empty());
+        KanbanService kanbanService = new KanbanService(kanbanRepository);
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> kanbanService.deleteTask("4711", "testUserId"));
     }
 
 }
