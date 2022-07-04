@@ -10,7 +10,7 @@ export function useTimer() {
             const jwt = localStorage.getItem('jwt')
             const decoded = window.atob(jwt!.split('.')[1])
             const decodedAsObject = JSON.parse(decoded)
-            setTimeLeft(decodedAsObject.exp - (Math.floor(Date.now() / 1000)))
+            setTimeLeft(decodedAsObject.exp - (Math.ceil(Date.now() / 1000)))
         }, 1000)
 
         return () => clearTimeout(timeOutId)
