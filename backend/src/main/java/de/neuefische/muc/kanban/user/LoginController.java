@@ -28,7 +28,7 @@ public class LoginController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginData loginData) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword()));
-            KanbanUser user = userService.findByUsername(loginData.getUsername()).orElseThrow();
+            User user = userService.findByUsername(loginData.getUsername()).orElseThrow();
             String jwt = jwtService.createJwt(new HashMap<>(), user.getId());
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (AuthenticationException e) {
@@ -38,7 +38,7 @@ public class LoginController {
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refreshToken(Principal principal) {
-        KanbanUser user = userService.findByUsername(principal.getName()).orElseThrow();
+        User user = userService.findByUsername(principal.getName()).orElseThrow();
         String jwt = jwtService.createJwt(new HashMap<>(), user.getId());
         return ResponseEntity.ok(new LoginResponse(jwt));
     }

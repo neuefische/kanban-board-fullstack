@@ -1,6 +1,6 @@
 package de.neuefische.muc.kanban.security;
 
-import de.neuefische.muc.kanban.user.KanbanUser;
+import de.neuefische.muc.kanban.user.User;
 import de.neuefische.muc.kanban.user.UserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private void setSecurityContext(Claims claims) {
         List<SimpleGrantedAuthority> grantedAuthorities = claims.get("roles") == null ? List.of() : ((List<String>) claims.get("roles")).stream().map(SimpleGrantedAuthority::new).toList();
 
-        KanbanUser user = userService.findById(claims.getSubject()).orElseThrow();
+        User user = userService.findById(claims.getSubject()).orElseThrow();
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), "", grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(token);

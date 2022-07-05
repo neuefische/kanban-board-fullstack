@@ -1,5 +1,7 @@
 package de.neuefische.muc.kanban;
 
+import de.neuefische.muc.kanban.task.Task;
+import de.neuefische.muc.kanban.task.TaskStatus;
 import de.neuefische.muc.kanban.user.LoginData;
 import de.neuefische.muc.kanban.user.LoginResponse;
 import de.neuefische.muc.kanban.user.UserCreationData;

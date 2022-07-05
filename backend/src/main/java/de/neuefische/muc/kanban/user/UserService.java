@@ -23,18 +23,18 @@ public class UserService {
             throw new IllegalArgumentException("username is blank");
         }
 
-        KanbanUser user = new KanbanUser();
+        User user = new User();
         user.setUsername(userCreationData.getUsername());
         user.setPassword(passwordEncoder.encode(userCreationData.getPassword()));
 
         userRepository.save(user);
     }
 
-    public Optional<KanbanUser> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<KanbanUser> findById(String userId) {
+    public Optional<User> findById(String userId) {
         return userRepository.findById(userId);
     }
 }

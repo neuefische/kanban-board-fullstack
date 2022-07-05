@@ -1,4 +1,4 @@
-package de.neuefische.muc.kanban;
+package de.neuefische.muc.kanban.task;
 
 public enum TaskStatus {
 

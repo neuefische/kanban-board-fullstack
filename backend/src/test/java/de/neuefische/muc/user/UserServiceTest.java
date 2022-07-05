@@ -1,6 +1,6 @@
 package de.neuefische.muc.user;
 
-import de.neuefische.muc.kanban.user.KanbanUser;
+import de.neuefische.muc.kanban.user.User;
 import de.neuefische.muc.kanban.user.UserCreationData;
 import de.neuefische.muc.kanban.user.UserRepository;
 import de.neuefische.muc.kanban.user.UserService;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-class KanbanUserServiceTest {
+class UserServiceTest {
 
     @Test
     void shouldCreateNewUser() {
@@ -25,7 +25,7 @@ class KanbanUserServiceTest {
         userService.createNewUser(userCreationData);
 
         // then
-        KanbanUser expectedUser = new KanbanUser();
+        User expectedUser = new User();
         expectedUser.setUsername("testUser");
         expectedUser.setPassword("hashedPassword");
 

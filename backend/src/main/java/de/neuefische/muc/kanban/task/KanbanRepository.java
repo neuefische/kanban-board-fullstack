@@ -1,4 +1,4 @@
-package de.neuefische.muc.kanban;
+package de.neuefische.muc.kanban.task;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

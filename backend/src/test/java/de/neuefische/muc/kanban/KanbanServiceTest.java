@@ -1,5 +1,9 @@
 package de.neuefische.muc.kanban;
 
+import de.neuefische.muc.kanban.task.KanbanRepository;
+import de.neuefische.muc.kanban.task.KanbanService;
+import de.neuefische.muc.kanban.task.Task;
+import de.neuefische.muc.kanban.task.TaskStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
