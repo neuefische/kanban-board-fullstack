@@ -21,7 +21,7 @@ export default function Login() {
     return (
         <div>
             <h3>Login</h3>
-            You don't have an account? <Link to="/register">Get on, FAST! ASAP!!!</Link>
+            You don't have an account? <Link to="/register">Get one, FAST! ASAP!!!</Link>
             <form onSubmit={login}>
                 <input type="text" value={username} onChange={ev => setUsername(ev.target.value)} placeholder="Username" />
                 <input type="password" value={password} onChange={ev => setPassword(ev.target.value)} placeholder="Password" />
