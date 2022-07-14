@@ -14,7 +14,7 @@ export default function Login() {
         ev.preventDefault()
         loginUser({username, password})
             .then(loginResponse => localStorage.setItem('jwt', loginResponse.jwt))
-            .then(() => nav('/app'))
+            .then(() => nav('/app/kanban'))
             .catch(() => setErrorMessage('Login failed'))
     }
 

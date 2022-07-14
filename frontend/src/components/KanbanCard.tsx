@@ -49,7 +49,7 @@ export default function KanbanCard({infos, onChange} : KanbanCardProps){
                         :
                         <button className={'btn'} onClick={()=>returnItem()}>{"<Back"}</button>
                     }
-                    <button className={'btn'} onClick={()=>nav('/'+infos.id)}>Edit</button>
+                    <button className={'btn'} onClick={()=>nav('/app/'+infos.id)}>Edit</button>
                     {infos.status==="DONE"?
                         <button className={'btn'} onClick={()=>removeItem()}>{"Delete>"}</button>
                         :

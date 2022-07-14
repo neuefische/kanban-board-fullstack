@@ -11,7 +11,7 @@ export const loginUser = (loginData: LoginData) => {
 }
 
 export const getAllItems = () =>{
-    return axios.get(`api/kanban`, {
+    return axios.get(`/api/kanban`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -23,7 +23,7 @@ export const getAllItems = () =>{
 }
 
 export const postNewItem = (item : KanbanItem) =>{
-    return axios.post(`api/kanban`, item, {
+    return axios.post(`/api/kanban`, item, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -35,7 +35,7 @@ export const postNewItem = (item : KanbanItem) =>{
 }
 
 export const deleteItem = (id ?: string) => {
-    return axios.delete(`api/kanban/${id}`, {
+    return axios.delete(`/api/kanban/${id}`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -47,7 +47,7 @@ export const deleteItem = (id ?: string) => {
 }
 
 export const changeItem = (item : KanbanItem) => {
-    return axios.put(`api/kanban`,item, {
+    return axios.put(`/api/kanban`,item, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -59,7 +59,7 @@ export const changeItem = (item : KanbanItem) => {
 }
 
 export const getItemById = (id : string) => {
-    return axios.get(`api/kanban/${id}`, {
+    return axios.get(`/api/kanban/${id}`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -71,7 +71,7 @@ export const getItemById = (id : string) => {
 }
 
 export const advanceKanban = (item : KanbanItem) =>{
-    return axios.put(`api/kanban/next`,item, {
+    return axios.put(`/api/kanban/next`,item, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -83,7 +83,7 @@ export const advanceKanban = (item : KanbanItem) =>{
 }
 
 export const returnKanban = (item : KanbanItem) =>{
-    return axios.put(`api/kanban/prev`, item, {
+    return axios.put(`/api/kanban/prev`, item, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
@@ -91,6 +91,15 @@ export const returnKanban = (item : KanbanItem) =>{
     .then(response => {
         refreshToken()
         return response.data
+    })
+}
+
+export const importCsv = (fileData: FormData) => {
+    return axios.post('/api/kanban', fileData, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+            'Content-Type': 'multipart/form-data'
+        }
     })
 }
 

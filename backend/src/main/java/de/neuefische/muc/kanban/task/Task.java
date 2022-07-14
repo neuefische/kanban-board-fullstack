@@ -25,8 +25,23 @@ public class Task {
         this.status = status;
     }
 
-    public Task setStatus(TaskStatus status) {
+    private Task setStatus(TaskStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public Task demote() {
+        this.setStatus(this.getStatus().prev());
+        return this;
+    }
+
+    public Task promote() {
+        this.setStatus(this.getStatus().next());
+        return this;
+    }
+
+    public Task setUserId(String userId) {
+        this.userId = userId;
         return this;
     }
 }

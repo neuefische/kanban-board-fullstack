@@ -1,4 +1,3 @@
-import React from 'react';
 import KanbanPage from "./pages/KanbanPage";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import EditPage from "./pages/EditPage";
@@ -11,8 +10,9 @@ function App() {
           <Routes>
               <Route path={'/'} element={<Login />} />
               <Route path={'/register'} element={<Register />} />
-              <Route path={'/app'} element={<KanbanPage/>}/>
-              <Route path={'/:id'} element={<EditPage/>}/>
+              <Route path={'/app/kanban'} element={<KanbanPage/>}/>
+              <Route path={'/app/:id'} element={<EditPage/>}/>
+              
           </Routes>
       </BrowserRouter>
   );

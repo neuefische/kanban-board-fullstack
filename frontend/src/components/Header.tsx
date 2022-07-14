@@ -1,7 +1,7 @@
 import { useTimer } from '../hooks/custom-hooks'
 import './Header.css'
 
-export default function Header(){
+export default function Header() {
 
     const secondsLeft = useTimer()
 

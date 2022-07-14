@@ -4,8 +4,10 @@ import de.neuefische.muc.kanban.user.User;
 import de.neuefische.muc.kanban.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -36,6 +38,17 @@ public class KanbanController {
     public void createTask(@RequestBody Task task, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow();
         kanbanService.createTask(task, user.getId());
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createTasks(@RequestParam("csv") MultipartFile file, Principal principal) throws Exception {
+        User user = userService.findByUsername(principal.getName()).orElseThrow();
+        try {
+            kanbanService.createTasks(file.getInputStream(), user.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping
